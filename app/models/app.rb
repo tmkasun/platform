@@ -186,7 +186,7 @@ class App < ActiveRecord::Base
 			self.install_status = 40
 
 			downloaded_file = nil
-			unless (installer.source_url.nil? or installer.source_url.blank?)
+			unless (installer.source_url.blank?)
 				downloaded_file = Downloader.download_and_check_sha1(installer.source_url, installer.source_sha1)
 				Dir.chdir(app_path) do
 					File.symlink(downloaded_file, "source-file")
@@ -352,14 +352,14 @@ class App < ActiveRecord::Base
 
 	def install_pkgs(installer)
 		pkgs = installer.pkg
-		return if pkgs.nil? or pkgs.blank?
+		return if pkgs.blank?
 		pkgs.strip!
 		Platform.install(pkgs, installer.source_sha1)
 	end
 
 	def install_app_deps(installer)
 		deps = installer.app_dependencies
-		return [] if deps.nil? or deps.blank?
+		return [] if deps.blank?
 		deps.strip!
 		deps.split(/[, ]+/).map do |identifier|
 			a = App.find_by_identifier identifier
@@ -374,7 +374,7 @@ class App < ActiveRecord::Base
 
 	def install_pkg_deps(installer)
 		deps = installer.pkg_dependencies
-		return if deps.nil? or deps.blank?
+		return if deps.blank?
 		deps.strip!
 		unless deps.blank?
 			Platform.install(deps)
@@ -383,7 +383,7 @@ class App < ActiveRecord::Base
 
 	def uninstall_pkgs(uninstaller)
 		deps = uninstaller.pkg
-		return if deps.nil? or deps.blank?
+		return if deps.blank?
 		deps.strip!
 		unless deps.blank?
 			Platform.uninstall(deps)
@@ -392,7 +392,7 @@ class App < ActiveRecord::Base
 
 	def install_theme(installer, source)
 
-		return if (installer.source_url.nil? or installer.source_url.blank?)
+		return if (installer.source_url.blank?)
 
 		dir = nil
 		Dir.chdir(File.join(Rails.root, THEME_ROOT)) do
@@ -426,7 +426,7 @@ class App < ActiveRecord::Base
 		mkdir File.join(path, 'html')
 		mkdir File.join(path, 'logs')
 
-		return [name, path] if (installer.source_url.nil? or installer.source_url.blank?)
+		return [name, path] if (installer.source_url.blank?)
 
 		one_dir = true
 		Dir.chdir(path) do
